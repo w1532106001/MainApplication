@@ -10,9 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.add
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -44,13 +41,10 @@ class HomeFragment : BaseFragment() {
             setOnItemChildClickListener { adapter, view, position ->
                 when (view.id) {
                     R.id.itemLayout -> {
-//                        view as ConstraintLayout
-//                        val imageView = view.getViewById(R.id.imageView) as ImageView
-//
-//
-//                        val extras = FragmentNavigatorExtras( imageView to "secondTransitionName")
-//                        findNavController().navigate(R.id.action_navigation_home_to_detailFragment,null,null,extras)
-                        findNavController().navigate(R.id.action_navigation_home_to_play1Fragment,null)
+                        view as ConstraintLayout
+                        val imageView = view.getViewById(R.id.imageView) as ImageView
+                        val extras = FragmentNavigatorExtras( imageView to "secondTransitionName")
+                        findNavController().navigate(R.id.action_navigation_home_to_detailFragment,null,null,extras)
                     }
                 }
             }

@@ -16,6 +16,7 @@ import com.whc.asmrMusic.ui.DetailFragment
 import com.whc.asmrMusic.ui.MvpView
 import com.whc.asmrMusic.ui.home.HomeFragment
 import com.whc.asmrMusic.ui.notifications.NotificationsFragment
+import dagger.android.support.AndroidSupportInjection
 
 //import kotlinx.android.synthetic.main.fragment_base.*
 //import kotlinx.android.synthetic.main.fragment_base.view.*
@@ -59,6 +60,7 @@ abstract class BaseFragment : Fragment(), MvpView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AndroidSupportInjection.inject(this)
 
 
 
