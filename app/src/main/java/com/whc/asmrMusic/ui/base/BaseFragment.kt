@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.whc.asmrMusic.ui.base
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,22 +13,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.transition.ChangeBounds
-import com.whc.asmrMusic.MainActivity
 import com.whc.asmrMusic.databinding.FragmentBaseBinding
-import com.whc.asmrMusic.ui.DetailFragment
 import com.whc.asmrMusic.ui.MvpView
-import com.whc.asmrMusic.ui.home.HomeFragment
-import com.whc.asmrMusic.ui.notifications.NotificationsFragment
-import dagger.android.support.AndroidSupportInjection
 
-//import kotlinx.android.synthetic.main.fragment_base.*
-//import kotlinx.android.synthetic.main.fragment_base.view.*
-//import kotlinx.android.synthetic.main.layout_error.view.*
-//import kotlinx.android.synthetic.main.layout_progress.view.*
 
 abstract class BaseFragment : Fragment(), MvpView {
 
-    lateinit var baseBinding: FragmentBaseBinding
+    private lateinit var baseBinding: FragmentBaseBinding
 
 
     open fun getLoadView(): LinearLayout = baseBinding.layoutProgress.root
@@ -60,8 +54,7 @@ abstract class BaseFragment : Fragment(), MvpView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AndroidSupportInjection.inject(this)
-
+//        AndroidSupportInjection.inject(this)
 
 
 //        appbar_base.visibility = View.GONE
@@ -74,26 +67,27 @@ abstract class BaseFragment : Fragment(), MvpView {
 
 
     override fun showLoading(message: String?) {
-        getLoadView()?.visibility = View.VISIBLE
-        getLoadTextView()?.visibility = if (message != null) View.VISIBLE else View.GONE
-        message?.let { getLoadTextView()?.text = it }
-        getLoadView()?.bringToFront()
+        getLoadView().visibility = View.VISIBLE
+        getLoadTextView().visibility = if (message != null) View.VISIBLE else View.GONE
+        message?.let { getLoadTextView().text = it }
+        getLoadView().bringToFront()
     }
 
     override fun showContent() {
-        getContentView()?.visibility = View.VISIBLE
-        getContentView()?.bringToFront()
+        getContentView().visibility = View.VISIBLE
+        getContentView().bringToFront()
     }
 
     override fun showError() {
         showError(null)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun showError(message: String?) {
         getErrorView().visibility = View.VISIBLE
-        getErrorImageView()?.visibility = View.VISIBLE
-        message?.let { getErrorTextView()?.text = "$it\n重试" }
-        getErrorView()?.bringToFront()
+        getErrorImageView().visibility = View.VISIBLE
+        message?.let { getErrorTextView().text = "$it\n重试" }
+        getErrorView().bringToFront()
     }
 
     override fun showMessage(message: String) {

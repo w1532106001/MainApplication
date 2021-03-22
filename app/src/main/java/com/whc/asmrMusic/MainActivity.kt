@@ -3,28 +3,30 @@ package com.whc.asmrMusic
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.whc.asmrMusic.databinding.ActivityMainBinding
-import dagger.android.AndroidInjection
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
     lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        requestWindowFeature(Window.FEATURE_NO_TITLE)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        AndroidInjection.inject(this)
-
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
         val navController = findNavController(R.id.nav_host_fragment)
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             binding.navView.visibility = when (destination.id) {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications -> {
                     View.VISIBLE
@@ -36,4 +38,8 @@ class MainActivity : AppCompatActivity() {
         }
         navView.setupWithNavController(navController)
     }
+
+
+    override fun supportFragmentInjector() = dispatchingAndroidInjector
+
 }
