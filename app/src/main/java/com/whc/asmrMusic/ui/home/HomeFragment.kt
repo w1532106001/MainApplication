@@ -1,13 +1,14 @@
 package com.whc.asmrMusic.ui.home
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.ViewCompat
-import androidx.core.view.doOnPreDraw
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,17 +19,17 @@ import com.whc.asmrMusic.common.AppDatabase
 import com.whc.asmrMusic.databinding.FragmentHomeBinding
 import com.whc.asmrMusic.model.Diary
 import com.whc.asmrMusic.ui.base.BaseFragment
-import java.util.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeFragment : BaseFragment() {
 
-    lateinit var itemAdapter: ItemAdapter
+    lateinit var diaryAdapter: DiaryAdapter
 
     lateinit var binding: FragmentHomeBinding
 
-    @Inject
-    lateinit var database: AppDatabase
 
     override fun createContentView(inflater: LayoutInflater, container: ViewGroup?): View {
         binding = FragmentHomeBinding.inflate(inflater)
@@ -37,10 +38,7 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
-        itemAdapter = ItemAdapter().apply {
+        diaryAdapter = DiaryAdapter().apply {
             setOnItemChildClickListener { _, view, _ ->
                 when (view.id) {
                     R.id.itemLayout -> {
@@ -57,40 +55,64 @@ class HomeFragment : BaseFragment() {
                 }
             }
         }
-        val list = arrayListOf<String>()
-        for (i in 0..10) {
-            list.add(i.toString())
-        }
-
-        itemAdapter.addChildClickViewIds(R.id.itemLayout)
-        binding.recyclerView.adapter = itemAdapter
+        diaryAdapter.addChildClickViewIds(R.id.itemLayout)
+        binding.recyclerView.adapter = diaryAdapter
         binding.recyclerView.layoutManager = GridLayoutManager(context, 2)
-        binding.recyclerView.apply {
-//            postponeEnterTransition()
-//            viewTreeObserver
-//                .addOnPreDrawListener {
-//                    startPostponedEnterTransition()
-//                    true
-//                }
-        }
-        itemAdapter.setNewInstance(list)
 
-        database.getDiaryDao().insert(Diary().apply {
-            text = "123"
-            updateCount = 0
-            createTime = Date()
-            updateTime = Date()
+        val viewModel = getViewModel(HomeViewModel::class.java)
+
+
+        viewModel?.getDiaryLiveData2()?.observe(viewLifecycleOwner, Observer {
+            diaryAdapter.setNewInstance(it)
         })
-    }
 
-    class ItemAdapter : BaseQuickAdapter<String, BaseViewHolder>(R.layout.item_view) {
-        override fun convert(holder: BaseViewHolder, item: String) {
-            val imageView = holder.getView<ImageView>(R.id.imageView)
-            ViewCompat.setTransitionName(imageView, "imageView${holder.adapterPosition}")
+
+        binding.searchEditText.setOnEditorActionListener { _, _, _ ->
+            hideKeyboard(binding.searchEditText)
+            searchDiaryByText(binding.searchEditText.text.toString())
+            return@setOnEditorActionListener false
+        }
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.toString().isEmpty()) {
+                    hideKeyboard(binding.searchEditText)
+                    binding.searchEditTextClearButton.visibility = View.GONE
+                } else {
+                    binding.searchEditTextClearButton.visibility = View.VISIBLE
+                }
+                searchDiaryByText(s.toString())
+            }
 
         }
-
+        )
+        binding.searchEditTextClearButton.setOnClickListener {
+            binding.searchEditText.text = null
+            it.visibility = View.GONE
+        }
     }
 
+    class DiaryAdapter : BaseQuickAdapter<Diary, BaseViewHolder>(R.layout.item_diary) {
+        override fun convert(holder: BaseViewHolder, item: Diary) {
+            holder.setText(R.id.textView, item.text)
+        }
+    }
+
+    fun searchDiaryByText(text: String) {
+        val viewModel = getViewModel(HomeViewModel::class.java)
+        viewModel?.updateSearchText(text)
+//        diaryAdapter.setNewInstance(diaryList.filter { it.text.contains(text) }.toMutableList())
+    }
 
 }

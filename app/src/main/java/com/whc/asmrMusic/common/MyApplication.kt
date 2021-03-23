@@ -22,10 +22,6 @@ class MyApplication : Application(), HasActivityInjector {
         builder.detectFileUriExposure()
     }
 
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-    }
-
     override fun activityInjector(): AndroidInjector<Activity> {
         return dispatchingAndroidInjector
     }

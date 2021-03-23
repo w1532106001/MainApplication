@@ -4,21 +4,28 @@ package com.whc.asmrMusic.ui.base
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.transition.ChangeBounds
 import com.whc.asmrMusic.databinding.FragmentBaseBinding
 import com.whc.asmrMusic.ui.MvpView
+import javax.inject.Inject
 
 
 abstract class BaseFragment : Fragment(), MvpView {
-
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var baseBinding: FragmentBaseBinding
 
 
@@ -107,4 +114,19 @@ abstract class BaseFragment : Fragment(), MvpView {
     }
 
     abstract fun createContentView(inflater: LayoutInflater, container: ViewGroup?): View
+
+    fun hideKeyboard(view: View?) {
+        view?.let {
+            it.clearFocus()
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+            imm?.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+    }
+
+    fun <T : ViewModel> getViewModel(modelClass: Class<T>): T? {
+        activity?.let {
+            return ViewModelProviders.of(it, viewModelFactory).get(modelClass)
+        }
+        return null
+    }
 }

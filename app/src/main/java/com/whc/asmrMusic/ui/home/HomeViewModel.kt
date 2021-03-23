@@ -2,12 +2,26 @@ package com.whc.asmrMusic.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.whc.asmrMusic.common.AppDatabase
+import com.whc.asmrMusic.model.Diary
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+class HomeViewModel @Inject constructor(private val database: AppDatabase) : ViewModel() {
+    private val searchText = MutableLiveData<String>()
+    var diaryLiveData: LiveData<MutableList<Diary>> = Transformations.switchMap(searchText) {
+        database.getDiaryDao().getAllDiary("%$searchText%")
     }
-    val text: LiveData<String> = _text
+
+    fun getDiaryLiveData2(): LiveData<MutableList<Diary>> {
+        return Transformations.switchMap(searchText) {
+            database.getDiaryDao().getAllDiary("%$searchText%")
+    }}
+
+    fun updateSearchText(text: String) {
+        searchText.value = text
+    }
+
 }
