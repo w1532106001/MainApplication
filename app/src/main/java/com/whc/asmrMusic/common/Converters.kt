@@ -4,7 +4,7 @@ import android.text.TextUtils
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.sql.Date
+import java.util.*
 
 
 class Converters {
@@ -16,13 +16,11 @@ class Converters {
 
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
-        value?.let { return Date(value) }
-        return null
+        return value?.let { Date(it) }
     }
 
     @TypeConverter
     fun dateToTimestamp(date: Date?): Long? {
-        date?.let { return date.time }
-        return null
+        return date?.time?.toLong()
     }
 }

@@ -1,4 +1,4 @@
-package com.whc.asmrMusic.common
+package com.whc.asmrMusic.di
 
 import com.whc.asmrMusic.MainActivity
 import dagger.Module

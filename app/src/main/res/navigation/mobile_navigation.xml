@@ -14,13 +14,15 @@
             app:destination="@id/detailFragment"
             app:popUpTo="@id/navigation_home"
             app:popUpToInclusive="false" />
+
         <action
-            android:id="@+id/action_navigation_home_to_pagingFragment"
-            app:destination="@id/pagingFragment"
+            android:id="@+id/action_navigation_home_to_diaryEditFragment"
+            app:destination="@id/diaryEditFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
     </fragment>
 
     <fragment
@@ -36,9 +38,11 @@
         android:id="@+id/detailFragment"
         android:name="com.whc.asmrMusic.ui.DetailFragment"
         tools:layout="@layout/fragment_detail" />
+
     <fragment
-        android:id="@+id/pagingFragment"
-        android:name="com.whc.asmrMusic.ui.PagingFragment"
-        android:label="fragment_paging"
-        tools:layout="@layout/fragment_paging" />
+        android:id="@+id/diaryEditFragment"
+        android:name="com.whc.asmrMusic.ui.DiaryEditFragment"
+        android:label="diary_edit_fragment"
+        tools:layout="@layout/diary_edit_fragment" />
+
 </navigation>

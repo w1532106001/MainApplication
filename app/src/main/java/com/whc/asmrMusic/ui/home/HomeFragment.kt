@@ -6,23 +6,17 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.whc.asmrMusic.R
-import com.whc.asmrMusic.common.AppDatabase
 import com.whc.asmrMusic.databinding.FragmentHomeBinding
 import com.whc.asmrMusic.model.Diary
 import com.whc.asmrMusic.ui.base.BaseFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import java.util.*
+
 
 class HomeFragment : BaseFragment() {
 
@@ -39,17 +33,17 @@ class HomeFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         diaryAdapter = DiaryAdapter().apply {
-            setOnItemChildClickListener { _, view, _ ->
+            setOnItemChildClickListener { _, view, position ->
                 when (view.id) {
                     R.id.itemLayout -> {
-                        view as ConstraintLayout
-                        val imageView = view.getViewById(R.id.imageView) as ImageView
-                        val extras = FragmentNavigatorExtras(imageView to "secondTransitionName")
+//                        Diaryed.confirmationAction(amount)
+//                        Diaryed
+                        val bundle = Bundle() //建立bundle用以将数据带过去，并在下面controller中带入bundle
+
+                        bundle.putSerializable("diary", data[position])
                         findNavController().navigate(
-                            R.id.action_navigation_home_to_detailFragment,
-                            null,
-                            null,
-                            extras
+                            R.id.action_navigation_home_to_diaryEditFragment,
+                            bundle
                         )
                     }
                 }
@@ -62,8 +56,8 @@ class HomeFragment : BaseFragment() {
         val viewModel = getViewModel(HomeViewModel::class.java)
 
 
-        viewModel?.getDiaryLiveData2()?.observe(viewLifecycleOwner, Observer {
-            diaryAdapter.setNewInstance(it)
+        viewModel?.diaryLiveData?.observe(viewLifecycleOwner, Observer {
+            diaryAdapter.setList(it)
         })
 
 
@@ -101,6 +95,8 @@ class HomeFragment : BaseFragment() {
             binding.searchEditText.text = null
             it.visibility = View.GONE
         }
+
+
     }
 
     class DiaryAdapter : BaseQuickAdapter<Diary, BaseViewHolder>(R.layout.item_diary) {
@@ -112,7 +108,6 @@ class HomeFragment : BaseFragment() {
     fun searchDiaryByText(text: String) {
         val viewModel = getViewModel(HomeViewModel::class.java)
         viewModel?.updateSearchText(text)
-//        diaryAdapter.setNewInstance(diaryList.filter { it.text.contains(text) }.toMutableList())
     }
 
 }

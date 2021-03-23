@@ -1,4 +1,4 @@
-package com.whc.asmrMusic.common
+package com.whc.asmrMusic.di
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

@@ -1,6 +1,7 @@
-package com.whc.asmrMusic.common
+package com.whc.asmrMusic.di
 
 import android.app.Application
+import com.whc.asmrMusic.common.MyApplication
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
