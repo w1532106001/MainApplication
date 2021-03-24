@@ -1,5 +1,6 @@
 package com.whc.asmrMusic.di
 
+import com.whc.asmrMusic.ui.DiaryEditFragment
 import com.whc.asmrMusic.ui.home.HomeFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -9,4 +10,7 @@ abstract class FragmentModule {
 
     @ContributesAndroidInjector
     abstract fun contributeHomeFragment(): HomeFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeDiaryEditFragment(): DiaryEditFragment
 }

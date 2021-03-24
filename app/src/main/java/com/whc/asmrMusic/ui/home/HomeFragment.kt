@@ -14,6 +14,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.whc.asmrMusic.R
 import com.whc.asmrMusic.databinding.FragmentHomeBinding
 import com.whc.asmrMusic.model.Diary
+import com.whc.asmrMusic.ui.DiaryEditFragment
 import com.whc.asmrMusic.ui.base.BaseFragment
 import java.util.*
 
@@ -32,15 +33,32 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        baseBinding.toolbarBase.apply {
+            visibility = View.VISIBLE
+            inflateMenu(R.menu.menu_add).apply {
+                setOnMenuItemClickListener {
+                    when(it.itemId){
+                        R.id.actionAdd->{
+                            val bundle = Bundle() //建立bundle用以将数据带过去，并在下面controller中带入bundle
+                            bundle.putSerializable("type", DiaryEditFragment.DiaryEditType.ADD)
+                            findNavController().navigate(
+                                R.id.action_navigation_home_to_diaryEditFragment,
+                                bundle
+                            )
+                        }
+                    }
+                    false
+                }
+            }
+        }
+
         diaryAdapter = DiaryAdapter().apply {
             setOnItemChildClickListener { _, view, position ->
                 when (view.id) {
                     R.id.itemLayout -> {
-//                        Diaryed.confirmationAction(amount)
-//                        Diaryed
                         val bundle = Bundle() //建立bundle用以将数据带过去，并在下面controller中带入bundle
-
                         bundle.putSerializable("diary", data[position])
+                        bundle.putSerializable("type", DiaryEditFragment.DiaryEditType.EDIT)
                         findNavController().navigate(
                             R.id.action_navigation_home_to_diaryEditFragment,
                             bundle
